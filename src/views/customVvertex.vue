@@ -80,9 +80,21 @@ function init() {
   const indexs = new Uint16Array([0, 1, 2, 2, 3, 0]);
   geometry1.setIndex(new THREE.BufferAttribute(indexs, 1));
 
-  let cube1 = new THREE.Mesh(geometry1, material);
-  scene.add(cube1);
+  /* ----------------------设置一个几何体不同材质--自定义和生成固定类型的几何体都可以使用--------------- */
 
+  //设置两个顶点组,形成2个材质
+  geometry1.addGroup(0, 3, 0); //参数1:从上面indexs的第0个开始;参数2:从0开始取3个顶点;参数三,这个属于第0个顶点组
+  geometry1.addGroup(3, 3, 1);
+
+  //第二种材质
+  const material1 = new THREE.MeshBasicMaterial({
+    color: 0x00ffff,
+    // side: THREE.DoubleSide, //两面看得到---材质不会线条才能体现这个效果
+  });
+
+  let cube1 = new THREE.Mesh(geometry1, [material, material1]); //这里第二个参数就是成一个数组,索引对应着刚刚设置的顶点组第三个参数
+  scene.add(cube1);
+  console.log("----:", geometry1);
   /* 世界坐标辅助器 */
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
