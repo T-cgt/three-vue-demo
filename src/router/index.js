@@ -28,6 +28,11 @@ const router = createRouter({
           name: "customVvertex",
           component: () => import("../views/customVvertex.vue"),
         },
+        {
+          path: "/texture",
+          name: "texture",
+          component: () => import("../views/texture.vue"),
+        },
       ],
     },
   ],

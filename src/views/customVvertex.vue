@@ -3,7 +3,7 @@
 </template>
 <script setup>
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { nextTick, onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import * as THREE from "three";
 let customVvertex = ref(null);
 let renderer = null;
@@ -94,7 +94,7 @@ function init() {
 
   let cube1 = new THREE.Mesh(geometry1, [material, material1]); //这里第二个参数就是成一个数组,索引对应着刚刚设置的顶点组第三个参数
   scene.add(cube1);
-  console.log("----:", geometry1);
+
   /* 世界坐标辅助器 */
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
@@ -108,13 +108,47 @@ function init() {
   function animate() {
     controls.update();
     //继续下一帧动画--这个会使得animate函数一直执行 ---异步函数
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
   animate();
 }
 onMounted(() => {
   init();
+});
+let animationId;
+function clearAll() {
+  cancelAnimationFrame(animationId); //停止渲染器动画
+  scene.remove(...scene.children); //移除实体
+
+  scene.traverse((object) => {
+    // 清除场景中的灯光
+    if (object instanceof THREE.Light) {
+      scene.remove(object);
+    }
+    // 清除场景中的相机
+    if (object instanceof THREE.Camera) {
+      scene.remove(object);
+    }
+
+    if (object.type === "Mesh") {
+      object.geometry.dispose();
+      object.material.dispose();
+    }
+  });
+
+  renderer.dispose();
+  renderer.forceContextLoss();
+
+  renderer.domElement = null;
+  renderer = null;
+  scene.clear();
+  scene = null;
+  camera = null;
+  console.log("----:", "清空");
+}
+onBeforeUnmount(() => {
+  clearAll();
 });
 </script>
 <style scoped>

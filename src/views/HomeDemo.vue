@@ -132,7 +132,7 @@ function setFullScreen() {
 }
 
 /* ----------------------------------- 使用GUI在three中加入按钮------------------------------------- */
-const gui = new GUI();
+var gui = new GUI();
 const obj = {
   Fullscreen: () => {
     document.body.requestFullscreen();
@@ -223,7 +223,14 @@ function clearAll() {
   scene.clear();
   scene = null;
   camera = null;
+  // 销毁 OrbitControls
+  controls.dispose();
   controls = null;
+
+  // 销毁GUI对象
+  gui.destroy();
+  // 解除对GUI实例的引用
+  gui = null;
 }
 onBeforeUnmount(() => {
   clearAll();

@@ -10,6 +10,7 @@ import HomeView from "./views/HomeView.vue";
       <RouterLink to="/changjin">场景</RouterLink>
       <RouterLink to="/HomeDemo">HomeDemo</RouterLink>
       <RouterLink to="/customVvertex">customVvertex</RouterLink>
+      <RouterLink to="/texture">纹理</RouterLink>
     </nav>
     <HomeView></HomeView>
   </div>
