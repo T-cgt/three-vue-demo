@@ -20,24 +20,20 @@ function init() {
   //创建相机
   const fov = 45;
   const aspect = texture.value.clientWidth / texture.value.clientHeight;
-  const near = 0.1; //是远近，不是界面大小
+  const near = 0.1;
   const far = 1000;
   camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-  camera.position.set(0, 0, 8); //设置位置
-  camera.lookAt(0, 0, 0); //设置相机看的方向
+  camera.position.set(0, 0, 8);
+  camera.lookAt(0, 0, 0);
 
-  scene = new THREE.Scene(); //创建场景
+  scene = new THREE.Scene();
 
-  //这里也可以不用传入dom节点，不过，要自己手动把节点加入到想要的dom种
-  //例如：document.body.appendChild(renderer.domElement) ---这里是加入到body下
-  //创建渲染器
   renderer = new THREE.WebGL1Renderer({
-    antialias: true, //告诉Three.js要启用抗锯齿（antialiased）渲染。抗锯齿可以避免绘制物体边缘时产生的锯齿。
+    antialias: true,
     canvas: texture.value,
   });
 
-  //如果用自己传入的dom作为canvas，就得设置这个，不然会糊了
   renderer.setSize(
     texture.value.clientWidth,
     texture.value.clientHeight,
@@ -59,7 +55,7 @@ function init() {
   texturePic.colorSpace = THREE.SRGBColorSpace; //设置纹理的色彩空间，设置成这种，更符合人感知的色彩颜色 另外LinearSRGBColorSpace是线性的颜色，会亮的比较亮，暗比较暗
 
   //加载环境遮挡贴图（ao贴图）---使得更加纹理立体
-  let aoMap = textureLoader.load("./texture/com.jpg");
+  let aoMap = textureLoader.load("./texture/com.png");
 
   //透明贴图---黑白照片，白色色域会显示，黑色会完全隐藏
   let alphaMap = textureLoader.load("./texture/door/height.jpg");
@@ -75,10 +71,10 @@ function init() {
     map: texturePic, //纹理
     transparent: true, //允许图片背景透明--本身图片的背景是透明的
     aoMap,
-    aoMapIntensity: 0.01,
+    aoMapIntensity: 0.01, //效果
     // alphaMap,
     // lightMap,
-    reflectivity: 0.6, //设置环境反光的影响
+    reflectivity: 0.9, //设置环境反光的影响
     // specularMap: aoMap, //设置高光贴图，贴图的照片中黑色会使得原先纹理反光不强烈，白色部分相对黑色反光
   });
 
@@ -102,6 +98,16 @@ function init() {
   plane = new THREE.Mesh(planeGeometry, planeMaterial);
   scene.add(plane);
 
+  /* ---------------------设置场景雾--------------------- */
+  //用一个很厚的盒子就能看到效果
+  scene.fog = new THREE.Fog(0x888888, 0.1, 50);
+  //color：表示雾化的颜色，可以是十六进制数值（例如：0x000000）或 Three.js 的颜色表示（例如：new THREE.Color(0x000000)）。
+  // near：表示近处的雾化距离，物体离相机越近，受雾化影响越弱。通常是一个正数，表示距离相机的最近距离，单位为世界坐标。
+  // far：表示远处的雾化距离，物体离相机越远，受雾化影响越强。通常是一个正数，表示距离相机的最远距离，单位为世界坐标。
+
+  //场景指数式的fog
+  // scene.fog = new THREE.FogExp2(0x888888, 0.5)
+
   animate();
 
   gui = new GUI();
@@ -118,7 +124,6 @@ function init() {
 
 function animate() {
   controls.update();
-  //继续下一帧动画--这个会使得animate函数一直执行 ---异步函数
   animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
@@ -133,11 +138,9 @@ function clearAll() {
   scene.remove(...scene.children); //移除实体
 
   scene.traverse((object) => {
-    // 清除场景中的灯光
     if (object instanceof THREE.Light) {
       scene.remove(object);
     }
-    // 清除场景中的相机
     if (object instanceof THREE.Camera) {
       scene.remove(object);
     }
@@ -152,7 +155,6 @@ function clearAll() {
   scene = null;
   camera = null;
 
-  // 销毁 OrbitControls
   controls.dispose();
   controls = null;
 
@@ -161,9 +163,7 @@ function clearAll() {
   renderer.domElement = null;
   renderer = null;
 
-  // 销毁GUI对象
   gui.destroy();
-  // 解除对GUI实例的引用
   gui = null;
 
   console.log("----:", "清空");

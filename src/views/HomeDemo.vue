@@ -59,16 +59,11 @@ function init() {
 
   /* ----------------------------------- 辅助器 & 轨道控制器------------------------------------- */
 
-  //添加世界坐标辅助器--长度3，红色--x轴 绿色y轴 蓝色z轴
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
-  //这里调整相机位置，不然看不到z轴
-  // camera.lookAt(3, 0, 0); //镜头往x轴偏移---这个也看不了z轴，因为位置不变
   camera.position.x = 0.5;
   camera.position.y = 0.5;
 
-  //添加轨道控制器---其实就是将鼠标时间传递进去，改变相机的位置
-  //homeDemo.value也可以写成renderer.domElement
   controls = new OrbitControls(camera, homeDemo.value);
   controls.enableDamping = true; //设置带阻尼的惯性
   controls.dampingFactor = 0.4; //设置阻尼系数，越小，它停下来越久

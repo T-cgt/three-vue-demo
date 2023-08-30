@@ -16,20 +16,17 @@ function init() {
   const fov = 45;
   const aspect =
     customVvertex.value.clientWidth / customVvertex.value.clientHeight;
-  const near = 0.1; //是远近，不是界面大小
+  const near = 0.1;
   const far = 1000;
   camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-  camera.position.set(0, 0, 8); //设置位置
-  camera.lookAt(0, 0, 0); //设置相机看的方向
+  camera.position.set(0, 0, 8);
+  camera.lookAt(0, 0, 0);
 
-  scene = new THREE.Scene(); //创建场景
+  scene = new THREE.Scene();
 
-  //这里也可以不用传入dom节点，不过，要自己手动把节点加入到想要的dom种
-  //例如：document.body.appendChild(renderer.domElement) ---这里是加入到body下
-  //创建渲染器
   renderer = new THREE.WebGL1Renderer({
-    antialias: true, //告诉Three.js要启用抗锯齿（antialiased）渲染。抗锯齿可以避免绘制物体边缘时产生的锯齿。
+    antialias: true,
     canvas: customVvertex.value,
   });
 
@@ -37,7 +34,7 @@ function init() {
     customVvertex.value.clientWidth,
     customVvertex.value.clientHeight,
     false
-  ); //如果用自己传入的dom作为canvas，就得设置这个，不然会糊了
+  );
 
   /* -----------------------------创建自定义顶点数据的几何体（正方形，但是没有共用点，要使用6个点，一般都是4个点）----------------- */
   //创建自定义几何体---空客，没有数据
@@ -98,8 +95,7 @@ function init() {
   /* 世界坐标辅助器 */
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
-  //这里调整相机位置，不然看不到z轴
-  // camera.lookAt(3, 0, 0); //镜头往x轴偏移---这个也看不了z轴，因为位置不变
+
   camera.position.x = 0.5;
   camera.position.y = 0.5;
   const controls = new OrbitControls(camera, customVvertex.value);
@@ -107,7 +103,7 @@ function init() {
 
   function animate() {
     controls.update();
-    //继续下一帧动画--这个会使得animate函数一直执行 ---异步函数
+
     animationId = requestAnimationFrame(animate);
     renderer.render(scene, camera);
   }
