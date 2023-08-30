@@ -89,7 +89,7 @@ function init() {
     scene.background = envmap;
 
     //设置场景的贴图
-    scene.enviroment = envmap;
+    scene.environment = envmap;
 
     //设置平面贴图，让平面受到环境光影响--要注释光照贴图
     planeMaterial.envMap = envmap;
