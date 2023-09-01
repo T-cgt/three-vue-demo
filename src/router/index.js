@@ -33,6 +33,16 @@ const router = createRouter({
           name: "texture",
           component: () => import("../views/texture.vue"),
         },
+        {
+          path: "/model",
+          name: "model",
+          component: () => import("../views/model.vue"),
+        },
+        {
+          path: "/lightInteraction",
+          name: "lightInteraction",
+          component: () => import("../views/射线交互.vue"),
+        },
       ],
     },
   ],
