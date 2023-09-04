@@ -165,7 +165,20 @@ function tweenAnmiate() {
     console.log("----:更新");
   });
   /* 使动画停止 */
-  // tween.stop();
+  let obj = {
+    stop: () => {
+      tween.stop();
+      tween1.stop();
+      tween2.stop();
+      tween3.stop();
+    },
+    start: function () {
+      this.stop();
+      tween.start();
+    },
+  };
+  gui.add(obj, "start").name("开始");
+  gui.add(obj, "stop").name("停止");
 }
 
 function animate() {
