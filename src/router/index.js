@@ -43,6 +43,11 @@ const router = createRouter({
           name: "lightInteraction",
           component: () => import("../views/射线交互.vue"),
         },
+        {
+          path: "/carShowDemo",
+          name: "carShowDemo",
+          component: () => import("../views/carShowDemo.vue"),
+        },
       ],
     },
   ],

@@ -13,6 +13,7 @@ import HomeView from "./views/HomeView.vue";
       <RouterLink to="/texture">纹理</RouterLink>
       <RouterLink to="/model">模型</RouterLink>
       <RouterLink to="/lightInteraction">选中交互</RouterLink>
+      <RouterLink to="/carShowDemo">车展</RouterLink>
     </nav>
     <HomeView></HomeView>
   </div>

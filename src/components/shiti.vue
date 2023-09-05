@@ -42,7 +42,7 @@ function init() {
   camera.position.z = 5;
 
   const color = 0xffffff;
-  const intensity = 1;
+  const intensity = 1; //光的强度
   const light = new DirectionalLight(color, intensity);
   light.position.set(-1, 2, 4);
 
@@ -156,5 +156,4 @@ onMounted(() => {
   init();
 });
 </script>
-<style scoped >
-</style>
+<style scoped></style>

@@ -15,6 +15,7 @@ let renderer = null;
 let scene = null;
 let camera = null;
 let controls, gui, animationId;
+let gltfLoader, model;
 
 function init() {
   /* ----------------------------------- 初始化------------------------------------- */
@@ -52,12 +53,20 @@ function init() {
   /* ---------------------------加载模型--------------------------------- */
   scene.fog = new THREE.Fog(0x888888, 1, 50);
   scene.background = new THREE.Color(0x999999);
-  let gltfLoader = new GLTFLoader();
+  gltfLoader = new GLTFLoader();
+
+  //实例化解析器
+  const dracoLoader = new DRACOLoader();
+  //设置解析器的路径
+  dracoLoader.setDecoderPath("./draco/");
+  //设置模型加载器要加载draco解析器
+  gltfLoader.setDRACOLoader(dracoLoader);
+
   gltfLoader.load(
     "./model/Duck.glb",
     //加载后回调函数
     (gltf) => {
-      const model = gltf.scene;
+      model = gltf.scene;
       model.position.set(2, 0, 2);
       scene.add(model);
     } //模型材质是收到灯光影响，所以没有灯光情况下是黑色的
@@ -72,13 +81,6 @@ function init() {
       scene.add(gltf.scene);
     }
   );
-
-  //实例化解析器
-  const dracoLoader = new DRACOLoader();
-  //设置解析器的路径
-  dracoLoader.setDecoderPath("./draco/");
-  //设置模型加载器要加载draco解析器
-  gltfLoader.setDRACOLoader(dracoLoader);
 
   //设置环境贴图使得模型有颜色
   let rgbeLoader = new RGBELoader();
@@ -123,6 +125,15 @@ function clearAll() {
       object.material.dispose();
     }
   });
+
+  //清理模型
+  model.traverse((node) => {
+    if (node.isMesh) {
+      node.geometry.dispose();
+      node.material.dispose();
+    }
+  });
+  gltfLoader = null;
 
   scene.clear();
   scene = null;
