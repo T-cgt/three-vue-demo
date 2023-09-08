@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     open: true,
-
     port: 5050,
+    host: "0.0.0.0",
   },
 });

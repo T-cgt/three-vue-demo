@@ -48,6 +48,11 @@ const router = createRouter({
           name: "carShowDemo",
           component: () => import("../views/carShowDemo.vue"),
         },
+        {
+          path: "/cardDemo",
+          name: "cardDemo",
+          component: () => import("../views/cardDemo.vue"),
+        },
       ],
     },
   ],
