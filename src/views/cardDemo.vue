@@ -149,50 +149,6 @@ let scene = null;
 let camera = null;
 let controls, gui, animationId;
 
-function init() {
-  /* ----------------------------------- 初始化------------------------------------- */
-  const fov = 75;
-  const aspect = canvas.value.clientWidth / canvas.value.clientHeight;
-  const near = 0.1;
-  const far = 1000;
-  camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-
-  camera.position.set(-3.23, 2.98, 18.06);
-
-  camera.updateProjectionMatrix();
-
-  scene = new THREE.Scene();
-
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    canvas: canvas.value,
-  });
-
-  renderer.setSize(canvas.value.clientWidth, canvas.value.clientHeight, false);
-
-  renderer.outputEncoding = THREE.sRGBEncoding; //设置颜色输出编码---这个更加真实
-  //设置场景背景的色调映射
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.5;
-  renderer.shadowMap.enabled = true; //允许阴影
-  renderer.physicallyCorrectLights = true;
-
-  controls = new OrbitControls(camera, canvas.value);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.4;
-  // controls.autoRotate = true;
-
-  addScene();
-  addLight();
-  addWater();
-  adPointLight();
-  addWhiteBall();
-  addAdmiate();
-  addTexture();
-  animate();
-  gui = new GUI();
-}
-
 function animate() {
   animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -223,7 +179,8 @@ function translateCamera(position, target) {
     duration: 1,
     ease: "power2.inOut",
   });
-  timeLine2.to(controls.position, {
+  timeLine2.to(controls.target, {
+    //修改 controls.target 属性，可以更改控制器的焦点目标，从而使相机围绕不同的点进行操作
     x: target.x,
     y: target.y,
     z: target.z,
@@ -240,6 +197,7 @@ let scenes = [
         new THREE.Vector3(-3.23, 3, 4.06),
         new THREE.Vector3(-8, 2, 0)
       );
+      resizeHeart();
     },
   },
   {
@@ -261,7 +219,7 @@ let scenes = [
     callback: () => {
       // 执行函数切
       translateCamera(new THREE.Vector3(7, 0, 23), new THREE.Vector3(0, 0, 0));
-      // makeHeart();
+      makeHeart();
     },
   },
   {
@@ -277,6 +235,8 @@ let scenes = [
 ];
 let index = ref(0);
 let isWheel = false;
+
+//滚动滚轮，文字切换
 function wheel() {
   if (isWheel) return;
   isWheel = true;
@@ -289,6 +249,157 @@ function wheel() {
   setTimeout(() => {
     isWheel = false;
   }, 1000);
+}
+
+/* ---------------------创建星星模块-------------- */
+//实例化星星实体 ---InstancedMesh可以创建多个同种的实体，提升性能
+let makeHeart;
+let resizeHeart;
+
+function addStars() {
+  let starsInstance = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.1, 32, 32),
+    new THREE.MeshStandardMaterial({
+      //这种材质不需要在特定照明下调整材质以使其看起来很好
+      color: 0xffffff,
+      emissive: 0xffffff,
+      emissiveIntensity: 10,
+    }),
+    100
+  );
+
+  //随机分布在天空上
+  let starsArr = []; //开始位置
+  let endArr = []; //爱心的位置
+  for (let i = 0; i < 100; i++) {
+    let x = Math.random() * 100 - 50; ///位置就是随机从-50到50
+    let y = Math.random() * 100 - 50;
+    let z = Math.random() * 100 - 50;
+    starsArr.push(new THREE.Vector3(x, y, z));
+
+    //星星是InstancedMesh物体，所以得用下边来变换本地位置
+    //创建一个四维矩阵来设置每个星星的随机位置
+    let matrix = new THREE.Matrix4();
+    matrix.setPosition(x, y, z);
+    starsInstance.setMatrixAt(i, matrix);
+  }
+  scene.add(starsInstance);
+
+  //创建爱心路径---贝塞尔曲线来画（不懂）
+  let heartShape = new THREE.Shape();
+  heartShape.moveTo(25, 25);
+  heartShape.bezierCurveTo(25, 25, 20, 0, 0, 0);
+  heartShape.bezierCurveTo(-30, 0, -30, 35, -30, 35);
+  heartShape.bezierCurveTo(-30, 55, -10, 77, 25, 95);
+  heartShape.bezierCurveTo(60, 77, 80, 55, 80, 35);
+  heartShape.bezierCurveTo(80, 35, 80, 0, 50, 0);
+  heartShape.bezierCurveTo(35, 0, 25, 25, 25, 25);
+
+  let center = new THREE.Vector3(0, 2, 10);
+  //根据上边的曲线来获取100个点
+  for (let i = 0; i < 100; i++) {
+    let point = heartShape.getPoint(i / 100);
+    endArr.push(
+      new THREE.Vector3(
+        point.x * 0.1 + center.x,
+        point.y * 0.1 + center.y,
+        center.z
+      )
+    );
+  }
+
+  //爱心动画
+  makeHeart = () => {
+    let params = {
+      time: 0,
+    };
+
+    gsap.to(params, {
+      time: 1,
+      duration: 1,
+      onUpdate: () => {
+        for (let i = 0; i < 100; i++) {
+          let x = starsArr[i].x + (endArr[i].x - starsArr[i].x) * params.time; //在这0-1过程中，慢慢从初始位置变成爱心路径的位置
+          let y = starsArr[i].y + (endArr[i].y - starsArr[i].y) * params.time;
+          let z = starsArr[i].z + (endArr[i].z - starsArr[i].z) * params.time;
+
+          let matir = new THREE.Matrix4();
+          matir.setPosition(new THREE.Vector3(x, y, z));
+          starsInstance.setMatrixAt(i, matir);
+        }
+        //表示所有实例的本地变换。 如果你要通过 .setMatrixAt() 来修改实例数据，你必须将它的 needsUpdate 标识为 true 。
+        starsInstance.instanceMatrix.needsUpdate = true;
+      },
+    });
+  };
+
+  //复原动画
+  resizeHeart = () => {
+    let params = {
+      time: 0,
+    };
+    gsap.to(params, {
+      time: 1,
+      duration: 1,
+      onUpdate: () => {
+        for (let i = 0; i < 100; i++) {
+          let x = endArr[i].x + (starsArr[i].x - endArr[i].x) * params.time;
+          let y = endArr[i].y + (starsArr[i].y - endArr[i].y) * params.time;
+          let z = endArr[i].z + (starsArr[i].z - endArr[i].z) * params.time;
+          let matrix = new THREE.Matrix4();
+          matrix.setPosition(x, y, z);
+          starsInstance.setMatrixAt(i, matrix);
+        }
+        starsInstance.instanceMatrix.needsUpdate = true;
+      },
+    });
+  };
+}
+
+function init() {
+  /* ----------------------------------- 初始化------------------------------------- */
+  const fov = 75;
+  const aspect = canvas.value.clientWidth / canvas.value.clientHeight;
+  const near = 0.1;
+  const far = 1000;
+  camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+  camera.position.set(-3.23, 2.98, 18.06);
+
+  camera.updateProjectionMatrix();
+
+  scene = new THREE.Scene();
+
+  renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    canvas: canvas.value,
+  });
+
+  renderer.setSize(canvas.value.clientWidth, canvas.value.clientHeight, false);
+
+  renderer.outputEncoding = THREE.sRGBEncoding; //设置颜色输出编码---这个更加真实
+  //设置场景背景的色调映射
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.5;
+  renderer.shadowMap.enabled = true; //允许阴影
+  renderer.useLegacyLights = false;
+
+  controls = new OrbitControls(camera, canvas.value);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.4;
+  // controls.autoRotate = true;
+
+  addScene();
+  addLight();
+  addWater();
+  adPointLight();
+  addWhiteBall();
+  addAdmiate();
+  addTexture();
+  addStars();
+
+  animate();
+  gui = new GUI();
 }
 
 /* ---------------------清空-------------------- */
