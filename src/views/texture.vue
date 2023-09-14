@@ -79,7 +79,7 @@ function init() {
   });
 
   //实例化rgbeLoad--用于加载环境纹理中的hdr文件(全景)
-  let rgbeLoader = new RGBELoader();
+  let rgbeLoader = new RGBELoader(); //加载和解析 .hdr 和 .rgbe 格式
   rgbeLoader.load("./texture/hdr/003.hdr", (envmap) => {
     //加载后一个回调---envmap是加载后实例
     //设置球形贴图

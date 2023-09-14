@@ -258,6 +258,7 @@ function clearAll() {
 
   gui.destroy();
   gui = null;
+  gltfLoader = null;
 }
 
 onBeforeUnmount(() => {

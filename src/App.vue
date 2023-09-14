@@ -15,6 +15,7 @@ import HomeView from "./views/HomeView.vue";
       <RouterLink to="/lightInteraction">选中交互</RouterLink>
       <RouterLink to="/carShowDemo">车展</RouterLink>
       <RouterLink to="/cardDemo">圣诞节</RouterLink>
+      <RouterLink to="/3DofficialWebsite">3D官网</RouterLink>
     </nav>
     <HomeView></HomeView>
   </div>

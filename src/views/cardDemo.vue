@@ -339,7 +339,7 @@ function addStars() {
       time: 0,
     };
     gsap.to(params, {
-      time: 1,
+      time: 1, //用作动画的进度参数
       duration: 1,
       onUpdate: () => {
         for (let i = 0; i < 100; i++) {

@@ -53,6 +53,11 @@ const router = createRouter({
           name: "cardDemo",
           component: () => import("../views/cardDemo.vue"),
         },
+        {
+          path: "/3DofficialWebsite",
+          name: "3DofficialWebsite",
+          component: () => import("../views/3DofficialWebsite.vue"),
+        },
       ],
     },
   ],
