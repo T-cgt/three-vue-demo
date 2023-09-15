@@ -58,6 +58,11 @@ const router = createRouter({
           name: "3DofficialWebsite",
           component: () => import("../views/3DofficialWebsite.vue"),
         },
+        {
+          path: "/3DLookHouse",
+          name: "3DLookHouse",
+          component: () => import("../views/3DLookHouse.vue"),
+        },
       ],
     },
   ],
