@@ -17,6 +17,7 @@ import HomeView from "./views/HomeView.vue";
       <RouterLink to="/cardDemo">圣诞节</RouterLink>
       <RouterLink to="/3DofficialWebsite">3D官网</RouterLink>
       <RouterLink to="/3DLookHouse">VR看房</RouterLink>
+      <RouterLink to="/robot">robot</RouterLink>
     </nav>
     <HomeView></HomeView>
   </div>

@@ -63,6 +63,11 @@ const router = createRouter({
           name: "3DLookHouse",
           component: () => import("../views/3DLookHouse.vue"),
         },
+        {
+          path: "/robot",
+          name: "robot",
+          component: () => import("../views/robot.vue"),
+        },
       ],
     },
   ],
