@@ -68,6 +68,11 @@ const router = createRouter({
           name: "robot",
           component: () => import("../views/robot.vue"),
         },
+        {
+          path: "/textWord",
+          name: "textWord",
+          component: () => import("../views/textWord.vue"),
+        },
       ],
     },
   ],
