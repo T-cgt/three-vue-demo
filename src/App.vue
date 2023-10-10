@@ -19,6 +19,7 @@ import HomeView from "./views/HomeView.vue";
       <RouterLink to="/3DLookHouse">VR看房</RouterLink>
       <RouterLink to="/robot">robot</RouterLink>
       <RouterLink to="/textWord">textWord</RouterLink>
+      <RouterLink to="/waterSky">水云天</RouterLink>
     </nav>
     <HomeView></HomeView>
   </div>

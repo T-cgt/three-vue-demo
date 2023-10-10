@@ -73,6 +73,11 @@ const router = createRouter({
           name: "textWord",
           component: () => import("../views/textWord.vue"),
         },
+        {
+          path: "/waterSky",
+          name: "waterSky",
+          component: () => import("../views/waterSky.vue"),
+        },
       ],
     },
   ],

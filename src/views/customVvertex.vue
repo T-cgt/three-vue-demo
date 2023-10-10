@@ -67,7 +67,7 @@ function init() {
   //自定义的几何体对象,不能共用
   const geometry1 = new THREE.BufferGeometry();
 
-  geometry1.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+  // geometry1.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 
   const vertices1 = new Float32Array([
     2.0, -1.0, 0, 4.0, -1.0, 0, 4.0, 1.0, 0, 2.0, 1.0, 0,
